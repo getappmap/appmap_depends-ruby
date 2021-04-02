@@ -1,0 +1,1 @@
+require 'appmap/depends/version'
