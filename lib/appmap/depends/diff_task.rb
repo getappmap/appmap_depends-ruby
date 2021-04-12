@@ -12,7 +12,18 @@ module AppMap
       Command = Struct.new(:verbose, :appmap_dir, :base, :head) do
         include SystemCommand
 
+        def run
+          cmd = prepare
+          `#{cmd}`.split("\n")
+        end
+
         def run_task
+          cmd = prepare
+          warn "Out of date tests:"
+          system_cmd cmd
+        end
+
+        def prepare
           detect_nodejs
           detect_appmap_js
           index_appmaps
@@ -28,17 +39,24 @@ module AppMap
             warn `#{diff_cmd}`
             warn ""
           end
-          run_depends_command %(#{diff_cmd} | env NODE_OPTIONS="--trace-warnings" #{APPMAP_JS} #{debug ? '--verbose' : ''} depends --field source_location --stdin-files)
+          %(#{diff_cmd} | env NODE_OPTIONS="--trace-warnings" #{APPMAP_JS} #{debug ? '--verbose' : ''} depends --field source_location --stdin-files).tap do |cmd|
+            warn cmd if verbose
+          end
         end
       end
 
-      attr_accessor :base_branch, :base_branches
+      attr_accessor :base, :base_branches
 
       def initialize(*args)
         super args.shift || :'depends:diff'
 
-        @base_branches = nil
+        @base = nil
         @base_branches = DEFAULT_BASE_BRANCHES
+      end
+
+      def files
+        validate
+        define_command.run
       end
 
       def validate
@@ -49,7 +67,7 @@ module AppMap
 
           @base_branches.find(&detect_branch)
         end
-        @base = @base_branch || detect_base.()
+        @base ||= detect_base.()
         raise "Unable to detect base branch. Specify it explicitly as a task argument." unless @base
       end
 
@@ -57,7 +75,7 @@ module AppMap
         'Prints the file names of all test cases that depend on a file which is modified from the base branch'
       end
 
-      def define_command(task_args)
+      def define_command(task_args = {})
         Command.new(Rake.verbose == true, appmap_dir).tap do |cmd|
           cmd.base = task_args[:base] || @base
           cmd.head = task_args[:head]

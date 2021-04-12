@@ -20,12 +20,6 @@ module AppMap
         system_cmd %Q(env NODE_OPTIONS="--trace-warnings" #{APPMAP_JS} #{debug ? '--verbose' : ''} index --appmap-dir #{appmap_dir})
       end
 
-      def run_depends_command(cmd)
-        warn cmd if verbose
-        warn "Out of date tests:"
-        system_cmd cmd
-      end
-
       def do_fail(msg)
         warn msg if verbose
         exit $?.exitstatus || 1
