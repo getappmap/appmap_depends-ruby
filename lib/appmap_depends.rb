@@ -36,5 +36,5 @@ if rake_defined?
 end
 
 if guard_defined?
-  require 'guard/app_map_depends_guard'
+  require 'guard/app_map_depends'
 end
