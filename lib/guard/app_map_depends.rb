@@ -11,6 +11,7 @@ module ::Guard
       @options = options
       @path_lock = Mutex.new
       @paths = Set.new
+      @depends_verbose = AppMap::Depends.verbose
     end
 
     def delay
@@ -19,11 +20,13 @@ module ::Guard
 
     def start
       @run_thread = start_thread
+      AppMap::Depends.verbose(true) if @options[:debug]
     end
 
     def stop
       @run_thread.kill if @run_thread
       @run_thread = nil
+      AppMap::Depends.verbose(@depends_verbose)
     end
 
     def run_on_modifications(paths)
@@ -46,9 +49,14 @@ module ::Guard
 
       require 'appmap_depends'
       depends = AppMap::Depends::AppMapJSDepends.new
+      depends.appmap_dir = options[:appmap_dir] if options[:appmap_dir]
+      depends.base_dir = options[:base_dir] if options[:base_dir]
       files = depends.depends(paths)
       files.each do |file|
-        FileUtils.touch file, nocreate: true
+        full_path = File.join(options[:base_dir] || '.', file)
+        Compat::UI.info "Guard::AppMapDepends touching: #{full_path}"
+
+        FileUtils.touch full_path, nocreate: true
       end
     end
 

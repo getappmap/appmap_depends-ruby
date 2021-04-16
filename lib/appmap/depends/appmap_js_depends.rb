@@ -28,9 +28,10 @@ module AppMap
       def depends(modified_files = nil)
         validate
 
-        index_appmaps(@appmap_dir)
+        index_appmaps(appmap_dir)
 
         cmd = %w[depends --field source_location]
+        cmd += [ '--appmap-dir', appmap_dir ] if appmap_dir
         cmd += [ '--base-dir', base_dir ] if base_dir
 
         options = {}
