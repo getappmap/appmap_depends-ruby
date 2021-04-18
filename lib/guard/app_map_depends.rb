@@ -50,10 +50,10 @@ module ::Guard
       require 'appmap_depends'
       depends = AppMap::Depends::AppMapJSDepends.new
       depends.appmap_dir = options[:appmap_dir] if options[:appmap_dir]
-      depends.base_dir = options[:base_dir] if options[:base_dir]
-      files = depends.depends(paths)
+      depends.base_dir = options[:watch_dir] if options[:watch_dir]
+      files = depends.depends(paths.map{|p| File.expand_path(p)})
       files.each do |file|
-        full_path = File.join(options[:base_dir] || '.', file)
+        full_path = File.join(options[:test_dir] || '.', file)
         Compat::UI.info "Guard::AppMapDepends touching: #{full_path}"
 
         FileUtils.touch full_path, nocreate: true
