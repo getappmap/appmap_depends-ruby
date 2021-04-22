@@ -42,10 +42,10 @@ In the file, check if `appmap_depends` is loaded, and then configure the Rake ta
 namespace :appmap do
   if %w[development test].member?(Rails.env)
     # appmap:depends - use in local development
-    AppMap::Depends::ModifiedTask.new.define
+    AppMap::Depends::Task::ModifiedTask.new.define
 
     # appmap:depends:diff - use in CI
-    AppMap::Depends::DiffTask.new.define
+    AppMap::Depends::Task::DiffTask.new.define
   end
 end
 ```

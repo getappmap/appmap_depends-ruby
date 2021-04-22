@@ -4,13 +4,16 @@ module AppMap
   module Depends
     module Task
       class ModifiedTask < BaseTask
-        attr_accessor :appmap_dir, :base_dir
+        DEFAULT_OUTPUT_FILE = File.join('tmp', 'appmap_depends_modified.txt')
+
+        attr_accessor :base_dir
 
         def initialize(*args)
           super args.shift || :'depends:modified'
 
           @appmap_dir = Depends::DEFAULT_APPMAP_DIR
           @base_dir = nil
+          @output_file = DEFAULT_OUTPUT_FILE
         end
 
         def description
@@ -25,8 +28,15 @@ module AppMap
           depends.appmap_dir = appmap_dir
           depends.base_dir = base_dir if base_dir
           lambda do
-            warn 'Out of date files:'
-            puts depends.depends.join("\n")
+            test_files = depends.depends
+            test_files = prune_directory_prefix(test_files)
+            File.write(@output_file, test_files.join("\n"))
+            if test_files.blank?
+              warn 'Tests are up to date'
+            else
+              warn 'Out of date files:'
+              warn test_files.join(' ')
+            end
           end          
         end
       end

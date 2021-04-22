@@ -4,6 +4,7 @@ module AppMap
   module Depends
     module Task
       class DiffTask < BaseTask
+        DEFAULT_OUTPUT_FILE = File.join('tmp', 'appmap_depends_diff.txt')
         DEFAULT_BASE_BRANCHES = %w[remotes/origin/main remotes/origin/master]
 
         attr_accessor :base, :head, :base_branches, :modified_files, :verbose
@@ -16,6 +17,7 @@ module AppMap
           @base = nil
           @head = nil
           @base_branches = DEFAULT_BASE_BRANCHES
+          @output_file = DEFAULT_OUTPUT_FILE
         end
 
         def description
@@ -37,9 +39,16 @@ module AppMap
           depends.base_dir = base_dir if base_dir
 
           lambda do
-            warn 'Out of date files:'
-            puts depends.depends(modified_files).join("\n")
-          end          
+            test_files = depends.depends(modified_files).join("\n")
+            test_files = prune_directory_prefix(test_files)
+            File.write(@output_file, test_files.join("\n"))
+            if test_files.blank?
+              warn 'Tests are up to date'
+            else
+              warn 'Out of date files:'
+              warn test_files.join(' ')
+            end
+          end
         end
       end
     end
