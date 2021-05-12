@@ -39,7 +39,7 @@ module AppMap
           depends.base_dir = base_dir if base_dir
 
           lambda do
-            test_files = depends.depends(modified_files).join("\n")
+            test_files = depends.depends(modified_files)
             test_files = prune_directory_prefix(test_files)
             File.write(@output_file, test_files.join("\n"))
             if test_files.blank?

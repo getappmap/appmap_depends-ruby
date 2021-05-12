@@ -4,7 +4,7 @@ module AppMap
   module Depends
     # Utilities for invoking the +@appland/appmap+ CLI.
     module AppMapJS
-      APPMAP_JS = './node_modules/@appland/appmap/src/cli.js'
+      APPMAP_JS = './node_modules/@appland/cli/src/cli.js'
 
       def detect_nodejs
         do_fail('node', 'please install NodeJS') unless system('node --version 2>&1 > /dev/null')
@@ -12,7 +12,7 @@ module AppMap
       end
 
       def detect_appmap_js
-        do_fail(APPMAP_JS, 'please install @appland/appmap from NPM') unless File.exists?(APPMAP_JS)
+        do_fail(APPMAP_JS, 'please install @appland/cli from NPM') unless File.exists?(APPMAP_JS)
         true
       end
 
