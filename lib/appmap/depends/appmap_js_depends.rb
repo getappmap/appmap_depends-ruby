@@ -12,8 +12,8 @@ module AppMap
       # Directory name to prefix to the list of modified files which is provided to +depends+.
       attr_accessor :base_dir
 
-      def initialize
-        @appmap_dir = Depends::DEFAULT_APPMAP_DIR
+      def initialize(appmap_dir)
+        @appmap_dir = appmap_dir
         @base_dir = false
       end
 

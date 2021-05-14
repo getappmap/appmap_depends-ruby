@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.email         = ['kgilpin@gmail.com']
 
   spec.summary       = %q{Provides Rake tasks to compute code dependencies based on AppMap data}
-  spec.homepage      = 'https://github.com/applandinc/appmap_swagger-ruby'
+  spec.homepage      = 'https://github.com/applandinc/appmap_depends-ruby'
   spec.license       = 'MIT'
   spec.required_ruby_version = Gem::Requirement.new('>= 2.3.0')
 

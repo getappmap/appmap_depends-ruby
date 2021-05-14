@@ -25,6 +25,7 @@ module AppMap
         end
         @base = detect_base.()
         raise "Unable to detect base branch. Specify it explicitly as a task argument." unless @base
+        @base
       end
 
       def modified_files
