@@ -2,7 +2,14 @@ require 'appmap/depends/version'
 
 module AppMap
   module Depends
-    DEFAULT_APPMAP_DIR = 'tmp/appmap'
+    # Default directory to scan for appmap.s
+    DEFAULT_APPMAP_DIR = File.join('tmp', 'appmap')
+    # Default file to write Rake task results.
+    DEFAULT_OUTPUT_FILE = File.join('tmp', 'appmap_depends.txt')
+    # Default base branches which will be checked for existance.
+    DEFAULT_BASE_BRANCHES = %w[remotes/origin/main remotes/origin/master].freeze
+    # Default pattern to enumerate test cases.
+    DEFAULT_TEST_FILE_PATTERNS = [ 'spec/**/*_spec.rb', 'test/**/*_test.rb' ].freeze
 
     def self.verbose(arg = nil)
       @verbose = arg if arg
@@ -18,23 +25,13 @@ rescue LoadError
   false
 end
 
-def guard_defined?
-  require 'guard'
-  true
-rescue LoadError
-  false
-end
-
+require 'appmap/depends/util'
 require 'appmap/depends/command_error'
 require 'appmap/depends/git_diff'
 require 'appmap/depends/appmap_js_depends'
+require 'appmap/depends/test_file_inspector'
+require 'appmap/depends/api'
 
 if rake_defined?
-  require 'appmap/depends/task/base_task'
-  require 'appmap/depends/task/diff_task'
-  require 'appmap/depends/task/modified_task'
-end
-
-if guard_defined?
-  require 'guard/app_map_depends'
+  AppMap::Depends.verbose(Rake.verbose == true)
 end
