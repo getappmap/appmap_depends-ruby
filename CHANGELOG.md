@@ -1,3 +1,7 @@
+# v0.3.0
+
+* Add top-level function 'remove_out_of_date_appmaps'.
+
 # v0.2.0
 
 * Switch to the monorepo version of `@appland/cli`.

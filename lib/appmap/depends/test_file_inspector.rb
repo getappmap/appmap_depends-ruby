@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'json'
+
 module AppMap
   module Depends
     class TestFileInspector
@@ -31,19 +33,13 @@ module AppMap
         def clean_appmaps
           return if removed.empty?
 
-          delete_appmap = lambda do |appmap_path|
-            FileUtils.rm_rf(appmap_path)
-            appmap_file_path = [ appmap_path, 'appmap.json' ].join('.')
-            File.unlink(appmap_file_path) if File.exists?(appmap_file_path)
-          end
-
           count = metadata_files.each_with_object(0) do |metadata_file, count|
             metadata = JSON.parse(File.read(metadata_file))
             source_location = Util.normalize_path(metadata['source_location'])
             appmap_path = File.join(metadata_file.split('/')[0...-1])
     
-            if removed.member?(source_location)
-              delete_appmap.(appmap_path)
+            if source_location && removed.member?(source_location)
+              Util.delete_appmap(appmap_path)
               count += 1
             end
           end

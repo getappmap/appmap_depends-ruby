@@ -11,10 +11,13 @@ module AppMap
       attr_accessor :appmap_dir
       # Directory name to prefix to the list of modified files which is provided to +depends+.
       attr_accessor :base_dir
+      # AppMap field to report.
+      attr_accessor :field
 
       def initialize(appmap_dir)
         @appmap_dir = appmap_dir
         @base_dir = false
+        @field = 'source_location'
       end
 
       # Ensures that all dependencies are available.
@@ -30,7 +33,8 @@ module AppMap
 
         index_appmaps(appmap_dir)
 
-        cmd = %w[depends --field source_location]
+        cmd = %w[depends]
+        cmd += [ '--field', field ] if field
         cmd += [ '--appmap-dir', appmap_dir ] if appmap_dir
         cmd += [ '--base-dir', base_dir ] if base_dir
 
