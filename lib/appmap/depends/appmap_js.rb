@@ -1,5 +1,9 @@
 APPMAP_JS = './node_modules/@appland/appmap/src/cli.js'
 
+require 'open3'
+require 'active_support'
+require 'active_support/core_ext'
+
 module AppMap
   module Depends
     # Utilities for invoking the +@appland/appmap+ CLI.
@@ -30,6 +34,7 @@ module AppMap
       def appmap_js_command(command, options = {})
         command.unshift << '--verbose' if Depends.verbose
         command.unshift APPMAP_JS
+        command.unshift 'node'
 
         warn command.join(' ') if Depends.verbose
         stdout, stderr, status = Open3.capture3({ 'NODE_OPTIONS' => '--trace-warnings' }, *command, options)
