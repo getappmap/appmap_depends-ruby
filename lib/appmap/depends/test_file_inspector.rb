@@ -80,10 +80,11 @@ module AppMap
         end
   
         test_files = Set.new(test_file_patterns.map(&Dir.method(:glob)).flatten)
-        new_test_files = test_files - source_locations
-        obsolete_test_files = source_locations - test_files
+        added_test_files = test_files - source_locations
+        changed_test_files -= added_test_files
+        removed_test_files = source_locations - test_files
     
-        TestReport.new(metadata_files, new_test_files, obsolete_test_files, changed_test_files, failed_test_files)
+        TestReport.new(metadata_files, added_test_files, removed_test_files, changed_test_files, failed_test_files)
       end
     end
   end
