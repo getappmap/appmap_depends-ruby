@@ -1,4 +1,8 @@
-# `appmap_depends`
+# Archived
+
+This project is archived because the functionality has moved to [https://github.com/applandinc/appmap-ruby](https://appland.com/docs/reference/appmap-ruby.html).
+
+# About
 
 This gem provides Rake tasks called `depends:modified` and `depends:diff`. These Rake tasks automatically compute a list of test cases that need to be re-run based on which source files have been modified. They use [AppMap](https://github.com/applandinc/appmap-ruby) data files, which contain information about test case dependencies on source files, to perform this feat.
 
